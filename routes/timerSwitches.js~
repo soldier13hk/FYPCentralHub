@@ -1,0 +1,78 @@
+import express from 'express';
+import React from 'react';
+//import something from '../data';
+var fs = require('fs');
+var content=fs.readFileSync('./rawdata.json','utf8');
+content=JSON.parse(content);
+
+var bodyParser = require('body-parser');
+
+var router=express.Router();
+
+router.get('/', function(req, res, next) {
+    res.send(renderFullPage());
+});
+
+router.get('/dataOfSwitches', function(req, res, next) {
+    res.json(content);
+});
+
+router.put('/ModeName', function(req, res, next) {
+    if(req.body.ModeChoose==0){
+        content.modechoose=[true,false,false];
+    }
+    else {
+        content.modechoose[req.body.ModeChoose]=true;
+        content.modechoose[(req.body.ModeChoose+1)%3]=false;
+        content.modechoose[(req.body.ModeChoose+2)%3]=false;
+    }
+    //console.log(something.getMode());
+    fs.writeFileSync('./rawdata.json',JSON.stringify(content),'utf8');
+    console.log(content);
+    res.sendStatus(200);
+});
+
+router.put('/timingFunction_add', function(req, res, next) {
+    content.timedata.push(req.body.timeadded);
+    fs.writeFileSync('./rawdata.json',JSON.stringify(content),'utf8');
+    res.sendStatus(200);
+});
+
+router.put('/settimeslot', function(req, res, next) {
+    console.log(req.body.newtimedata);
+    content.timedata=req.body.newtimedata;
+    fs.writeFileSync('./rawdata.json',JSON.stringify(content),'utf8');
+    res.sendStatus(200);
+});
+
+router.put('/ManualChoose', function(req, res, next) {
+    content.manualchoose=req.body.MannualChooses;
+    fs.writeFileSync('./rawdata.json',JSON.stringify(content),'utf8');
+    res.sendStatus(200);
+});
+
+
+
+function renderFullPage() {
+    return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    	<meta charset="utf-8">
+    	<title>React Router Redux Express</title>
+    </head>
+    <body>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/TimerSwitch">TimerSwitch</a>
+        <a href="https://192.168.0.100:8080/stream">Camera (Real time video)</a>
+        <a href="/securityCamera">Camera images</a>
+        <div id="reactbody"></div>
+       	<script src="../bin/app2.bundle.js"></script>
+    </body>
+    </html>
+    `
+}
+
+module.exports = router;
+

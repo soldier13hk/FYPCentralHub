@@ -1,0 +1,30 @@
+#reactbody{
+    text-align: center;
+}
+.main{
+    position: relative;
+    margin-top: 5vh;
+}
+
+h2 {
+    color: #006699;
+}
+
+li.headerOfLink {
+    display: inline;
+    padding: 20px;
+}
+
+li.button {
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+    width: fit-content;
+    text-decoration: none;
+    text-align: center;
+    color: white;
+    position: absolute;
+    left: 45%;
+    top: 35%;
+
+}
